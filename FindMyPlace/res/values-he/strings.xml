@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="map_error">"מצטערים! ארעה שגיאה"</string>
+    <string name="gps_disable">"הפעל גי פי אס"</string>
+    <string name="ok_button">"אישור"</string>
+    <string name="cancel_button">"ביטול"</string>
+    <string name="save_location">"שמור מיקום"</string>
+    <string name="address_text">"כתובת: "</string>
+    <string name="get_directions">"טען מסלול"</string>
+    <string name="location_name">"הכנס כינוי"</string>
+    <string name="address_image">"הוסף תמונה"</string>
+</resources>

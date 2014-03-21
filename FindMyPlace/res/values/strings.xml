@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">FindMyPlace</string>
+    <string name="scheme_url_prefix">findmyplace</string>
+    <string name="map_error">"Sorry! unable to create maps"</string>
+    <string name="gps_disable">"Your GPS seems to be disabled, do you want to enable it?"</string>
+    <string name="ok_button">"OK"</string>
+    <string name="cancel_button">"Cancel"</string>
+    <string name="save_location">"Save Location"</string>
+    <string name="get_directions">"Get Directions"</string>
+    <string name="address_text">"Address: "</string>
+    <string name="location_name">"Enter name "</string>
+   <string name="address_image">"Take a picture"</string>
+
+</resources>
