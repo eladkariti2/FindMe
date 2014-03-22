@@ -5,28 +5,30 @@ import java.util.HashMap;
 public abstract class APModel {
 
     private String m_ID;
-    private double  m_x;
-    private double  m_y;
+    private double  m_longitude;
+    private double  m_latitude;
     private double  m_z;
     private String m_title;
     private String m_imagePath;
+     private String m_address;
+    private String m_locationDescription;
     private HashMap<String, String> extentions =new HashMap<String, String>();
     
-    public double getX()
+    public double getLongitude()
     {
-            return m_x;
+            return m_longitude;
     }
     
-    public void setX(double x) {
-            this.m_x = x;
+    public void setLongitude(double longitude) {
+            this.m_longitude = longitude;
     }
     
-    public double getY() {
-            return m_y;
+    public double getLatitude() {
+            return m_latitude;
     }
 
-    public void setY(double y) {
-            this.m_y = y;
+    public void setLatitude(double latitude) {
+            this.m_latitude = latitude;
     }
 
     public double getZ() {
@@ -43,6 +45,14 @@ public abstract class APModel {
 
     public void setID(String id) {
             this.m_ID = id;
+    }
+    
+      public String getLocationDescription() {
+            return m_locationDescription;
+    }
+
+    public void setLocationDescription(String description) {
+            this.m_locationDescription = description;
     }
 
     public String getTitle() {
@@ -61,16 +71,16 @@ public abstract class APModel {
             this.m_ID = path;
     }
     
-    public void setLocation(double x,double y )
+    public void setLocation(double longitude,double latitude )
     {
-            m_x=x;
-            m_y=y;
+            m_longitude = longitude;
+            m_latitude = latitude;
     }
     
-    public void setLocation(double x,double y ,double z )
+    public void setLocation(double longitude,double latitude ,double z )
     {
-            m_x=x;
-            m_y=y;
+            m_longitude=longitude;
+            m_latitude=latitude;
             m_z=z;
     }
     
@@ -88,5 +98,14 @@ public abstract class APModel {
     {
             extentions.put(key, value);
     }
+
+	public void setAddress(String address) {
+		m_address = address;
+		
+	}
+	public String getAddress() {
+		return m_address;
+		
+	}
     
 }

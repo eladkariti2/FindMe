@@ -3,15 +3,20 @@ package com.findmyplace.fragment;
 import java.util.List;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,9 +30,11 @@ import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.model.APModel;
 import com.findmyplace.model.APParkingModel;
 import com.findmyplace.model.MapModel.RMDirection;
+import com.findmyplace.providers.MyImageProvider;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
 import com.findmyplace.util.StringUtil;
+import com.findmyplace.util.database.DataBaseUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,17 +46,16 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
 	GoogleMap _map;
 	LocationManager _locationManager;
-	Location _location;
-	String _address;
 	APModel _locationModel ;
 	Button _saveLocation;
-	
+	ImageView _locationImage ;
+		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View layout = inflater	.inflate(R.layout.save_location_layout, container, false);
 		_saveLocation = (Button)layout.findViewById(R.id.save_location_button);
-		
+
 		return layout;
 	}
 
@@ -58,7 +64,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		super.onActivityCreated(savedInstanceState);
 		initilizeMap();
 		initComponent();
-		
+
 	}	
 
 	/**
@@ -85,7 +91,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 	private void initComponent() {
 		((MainActivity)getActivity()).startLocationListener();
 		_saveLocation.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				saveLocation();	
@@ -101,16 +107,15 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
 	@Override
 	public void updateLocation(Location location) {
-		Log.d("HomeFragment", "Location - latitude: " + location.getLatitude() +", longitude: " + location.getLongitude());
-		_location = location;
+		Log.d("SaveLocationFragment", "Location - latitude: " + location.getLatitude() +", longitude: " + location.getLongitude());
 		int lat = (int) (location.getLatitude() * 1E6);
 		int lng = (int) (location.getLongitude() * 1E6);
 		GeoPoint point = new GeoPoint(lat,lng);	
-		_address = StringUtil.ConvertPointToLocation(getActivity(), point);	
-		
+		String addressText = StringUtil.ConvertPointToLocation(getActivity(), point);	
+
 		TextView address = (TextView)getActivity().findViewById(R.id.address_name);
-		address.setText(_address);
-		
+		address.setText(addressText);
+
 		LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate center= CameraUpdateFactory.newLatLng(position);
 		CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
@@ -118,28 +123,36 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		_map.setMyLocationEnabled(true);
 		_map.moveCamera(center);
 		_map.animateCamera(zoom);
-		
+
 		getActivity().findViewById(R.id.progrees_bar).setVisibility(View.GONE);
 		getActivity().findViewById(R.id.save_location_container).setVisibility(View.VISIBLE);
-		
+
 		_locationModel = new APParkingModel();
-		_locationModel.setX(_location.getLatitude());
-		_locationModel.setY(_location.getLongitude());
-		
+		_locationModel.setLongitude(location.getLatitude());
+		_locationModel.setLatitude(location.getLongitude());
+		_locationModel.setAddress(addressText);
+
 	}
-	
+
 	private void saveLocation() {
-		
+
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.setContentView(R.layout.save_location_dialog);
-		
-		EditText locationName = (EditText) dialog.findViewById(R.id.address_name);
+
+		EditText locationName = (EditText) dialog.findViewById(R.id.location_name);
 		Button cancelButton = (Button)dialog.findViewById(R.id.cancel_button);
 		Button okButton = (Button)dialog.findViewById(R.id.ok_button);
-		ImageView image = (ImageView)dialog.findViewById(R.id.location_image);
+		_locationImage = (ImageView)dialog.findViewById(R.id.location_image);
+		TextView address = (TextView)dialog.findViewById(R.id.address);
+		address.setText(_locationModel.getAddress());
 		
+		//Check if the device has camera, if not then hide picture container
+		PackageManager pm = getActivity().getPackageManager();
+		boolean hasCamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+		_locationImage.setVisibility(hasCamera ? View.VISIBLE : View.GONE);
+
 		cancelButton.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -147,8 +160,17 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 			}
 		});
 		
-		locationName.addTextChangedListener(new TextWatcher() {
+		okButton.setOnClickListener(new OnClickListener() {
 			
+			@Override
+			public void onClick(View v) {		
+				DataBaseUtil.saveUserLocationInDB(getActivity(),_locationModel);
+				dialog.hide();
+			}
+		});
+
+		locationName.addTextChangedListener(new TextWatcher() {
+
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {	
 			}
@@ -162,8 +184,46 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 				String name = new StringBuilder(s).toString();
 			}
 		});
-		
+
+		_locationImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dispatchTakePictureIntent();
+			}
+		});
+
 		dialog.show();
 	}
+
+	//Strat 
+
+	//Calling for app that can take picture and waite to result.
+	static final int REQUEST_IMAGE_CAPTURE = 1;
+
+	private void dispatchTakePictureIntent() {
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, MyImageProvider.CONTENT_URI);
+			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+		}
+	}
+
+
+	//Handle the picture result.
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+			Bundle extras = data.getExtras();
+			Log.d("ELAD",extras.toString());
+			Bitmap imageBitmap = (Bitmap) extras.get("data");
+			
+			_locationImage.setImageBitmap(imageBitmap);
+		}
+	}
+
+	//End
 
 }

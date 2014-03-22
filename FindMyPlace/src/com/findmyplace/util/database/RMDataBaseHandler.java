@@ -27,7 +27,7 @@ public class RMDataBaseHandler extends SQLiteOpenHelper{
 	public static final String LOCATION_ADDRESS = "address"; 
 	
     public static final String CREATE_LOCATION_TABLE = "create table " + LOCATION_TABLE + "(" + 
-    		ID + " text primary key, " +
+    		ID + " integer primary key, " +
     		LOCATION_ADDRESS + " text not null, " +
     		LOCATION_NAME + " text , " +
     		LOCATION_LATITUDE + " text not null, " +
@@ -62,10 +62,9 @@ public class RMDataBaseHandler extends SQLiteOpenHelper{
 		
 	}
 	
-	public long insert(String id,String name,String address, String latitude,
+	public long insert(String name,String address, String latitude,
 			String longitude,String image,String type){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(ID, id);
 		initialValues.put(LOCATION_ADDRESS, address);
         initialValues.put(LOCATION_NAME, name);
         initialValues.put(LOCATION_LATITUDE, latitude);

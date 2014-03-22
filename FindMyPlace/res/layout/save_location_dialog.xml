@@ -41,7 +41,7 @@
             android:text="@string/address_text" />
 
         <EditText
-            android:id="@+id/locatio_name"
+            android:id="@+id/location_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/location_name"
