@@ -2,6 +2,7 @@ package com.findmyplace.fragment;
 
 import com.example.findmyplace.R;
 import com.findmyplace.activites.MainActivity;
+import com.findmyplace.util.database.DataBaseUtil;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,8 +43,12 @@ public class HomeFragment extends Fragment{
 			
 			@Override
 			public void onClick(View v) {
-				Fragment routeFragment = new RouteFragment();
-				((MainActivity) getActivity()).addSaveLocationFragment(routeFragment);
+//				Fragment routeFragment = new RouteFragment();
+//				((MainActivity) getActivity()).addSaveLocationFragment(routeFragment);
+				
+				DataBaseUtil.getAllLocations(getActivity());
+				
+				
 			}
 		});
 		

@@ -68,7 +68,7 @@ public abstract class APModel {
     }
 
     public void setImage(String path) {
-            this.m_ID = path;
+            this.m_imagePath = path;
     }
     
     public void setLocation(double longitude,double latitude )

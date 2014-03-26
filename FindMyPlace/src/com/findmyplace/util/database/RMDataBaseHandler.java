@@ -27,7 +27,7 @@ public class RMDataBaseHandler extends SQLiteOpenHelper{
 	public static final String LOCATION_ADDRESS = "address"; 
 	
     public static final String CREATE_LOCATION_TABLE = "create table " + LOCATION_TABLE + "(" + 
-    		ID + " integer primary key, " +
+    		ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
     		LOCATION_ADDRESS + " text not null, " +
     		LOCATION_NAME + " text , " +
     		LOCATION_LATITUDE + " text not null, " +
@@ -74,13 +74,15 @@ public class RMDataBaseHandler extends SQLiteOpenHelper{
         return db.insert(LOCATION_TABLE, null, initialValues);		
 	}
 
-	
+	public void open(){
+		db = this.getWritableDatabase();
+	}
 	
 	public boolean delete(String id){
 		return db.delete(LOCATION_TABLE, ID + "=" + id, null) > 0;		
 	}
 	
-	public Cursor getAllLocations(String id){
+	public Cursor getAllLocations(){
 		Cursor c = db.query(false, LOCATION_TABLE,
 				new String[]{ID,LOCATION_ADDRESS,LOCATION_NAME,LOCATION_LATITUDE,LOCATION_LONGITUDE,IMAGE_URL,TYPE},
 				null,
@@ -90,7 +92,6 @@ public class RMDataBaseHandler extends SQLiteOpenHelper{
 				null, 
 				null);
 		return c;
-		
 	}
 
 }
