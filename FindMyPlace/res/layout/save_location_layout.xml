@@ -20,7 +20,7 @@
 
         <include
             android:id="@+id/location_details"
-            layout="@layout/location_layout" />
+            layout="@layout/locations_layout" />
 
         <fragment
             android:id="@+id/map"

@@ -28,11 +28,11 @@ public class DataBaseUtil {
 		
 	}
 
-	public static void getAllLocations(Context context) {
+	public static 	List<APModel> getAllLocations(Context context) {
 		RMDataBaseHandler dbHandler = new RMDataBaseHandler(context);
 		dbHandler.open();
 		Cursor cursor = dbHandler.getAllLocations();
-	
+		
 		List<APModel> locations = new ArrayList<APModel>();
 		for(cursor.moveToNext(); !cursor.isAfterLast() ; cursor.moveToNext()){
 			APModel model = new APParkingModel();
@@ -47,8 +47,25 @@ public class DataBaseUtil {
 		}
 		
 		
+		dbHandler.close();
+		return locations;
 		
+	}
+
+	public static boolean deleteLocation(Context context, String id) {
+		RMDataBaseHandler dbHandler = new RMDataBaseHandler(context);
+		dbHandler.open();
+		Boolean  isDeleted = dbHandler.delete(id);
+	
+		if (isDeleted){
+			Log.d("DataBaseUtil", "Location deleted, ID = " + id);
+		}else{
+			Log.d("DataBaseUtil", "Location not deleted, ID = " + id);
+		}
+			
+		dbHandler.close();
 		
+		return isDeleted;
 	}
 
 }

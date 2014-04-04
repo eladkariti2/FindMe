@@ -43,12 +43,8 @@ public class HomeFragment extends Fragment{
 			
 			@Override
 			public void onClick(View v) {
-//				Fragment routeFragment = new RouteFragment();
-//				((MainActivity) getActivity()).addSaveLocationFragment(routeFragment);
-				
-				DataBaseUtil.getAllLocations(getActivity());
-				
-				
+				Fragment routeFragment = new RouteFragment();
+				((MainActivity) getActivity()).addFragment(routeFragment, true, "");			
 			}
 		});
 		
@@ -57,7 +53,7 @@ public class HomeFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Fragment saveLocationFragment = new SaveLocationFragment();
-				((MainActivity) getActivity()).addSaveLocationFragment(saveLocationFragment);
+				((MainActivity) getActivity()).addFragment(saveLocationFragment, true, "");
 				
 			}
 		});

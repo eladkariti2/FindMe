@@ -9,4 +9,5 @@
     <string name="get_directions">"טען מסלול"</string>
     <string name="location_name">"הכנס כינוי"</string>
     <string name="address_image">"הוסף תמונה"</string>
+    <string name="location_item_description_title">"תיאור:"</string>
 </resources>

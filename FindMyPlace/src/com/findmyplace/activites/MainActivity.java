@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.TextView;
 
 import com.example.findmyplace.R;
 import com.findmyplace.fragment.HomeFragment;
@@ -28,8 +29,9 @@ public class MainActivity extends FragmentActivity {
 
 	LatLng _currentPosition ;
 	LocationManager _locationManager;
-	Fragment currentFrgment;
-
+	Fragment _currentFrgment;
+	TextView _title;
+	
 	APLocationListenr _locationListener = new APLocationListenr(this);
 
 	@Override
@@ -37,20 +39,14 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.base_activity);
 
-		Locale locale = new Locale("he");
-		Locale.setDefault(locale);
-		Configuration config = new Configuration();
-		config.locale = locale;
-		getBaseContext().getResources().updateConfiguration(config,
-				getBaseContext().getResources().getDisplayMetrics());
-
-		initComponent();
-
-		currentFrgment = new HomeFragment();
-		addFragment(currentFrgment,false,"");
+		initView();
+		
+		_currentFrgment = new HomeFragment();
+		addFragment(_currentFrgment,false,"");
 	}
 
-	private void addFragment(Fragment fragment, boolean addToBackStack,String tag) {
+	public void addFragment(Fragment fragment, boolean addToBackStack,String tag) {
+		_currentFrgment = fragment;
 		FragmentManager fm = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
@@ -69,22 +65,19 @@ public class MainActivity extends FragmentActivity {
 		fragmentTransaction.commit();
 	}
 
-	/***
-	 * function to check if the GPS is active, and to set the location manger. 
-	 */
-	private void initComponent() {
-
+	private void initView() {
+		_title = (TextView) findViewById(R.id.navigation_title);
 	}
 
 
 
 	public void updateLocation(Location location){
-		if(currentFrgment instanceof  LocationListenerI ){
+		if(_currentFrgment instanceof  LocationListenerI ){
 			//Update location if needed
-			((LocationListenerI)currentFrgment).updateLocation(location);
+			((LocationListenerI)_currentFrgment).updateLocation(location);
 			
 			//Stop listen to location if it's not route
-			if(!(currentFrgment instanceof RouteFragment)){
+			if(!(_currentFrgment instanceof RouteFragment)){
 				stopLocationListener();
 			}
 		}
@@ -135,9 +128,9 @@ public class MainActivity extends FragmentActivity {
 		alert.show();
 	}
 
-	public void addSaveLocationFragment(Fragment saveLocationFragment) {
-		currentFrgment = saveLocationFragment;
-		addFragment(saveLocationFragment,true,"");
-		
+	
+	
+	public void updateTitle(String title){
+		_title.setText(title);
 	}
 }

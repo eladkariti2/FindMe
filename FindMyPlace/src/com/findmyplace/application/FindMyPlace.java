@@ -11,5 +11,11 @@ public class FindMyPlace extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		Locale locale = new Locale("he");
+		Locale.setDefault(locale);
+		Configuration config = new Configuration();
+		config.locale = locale;
+		getBaseContext().getResources().updateConfiguration(config,
+				getBaseContext().getResources().getDisplayMetrics());
 	}
 }
