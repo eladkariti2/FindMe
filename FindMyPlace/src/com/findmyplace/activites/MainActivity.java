@@ -46,11 +46,15 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void addFragment(Fragment fragment, boolean addToBackStack,String tag) {
+		addFragment(fragment,addToBackStack,tag,false);
+	}
+	
+	public void addFragment(Fragment fragment, boolean addToBackStack,String tag,boolean toAdd) {
 		_currentFrgment = fragment;
 		FragmentManager fm = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
-		if(fm.getBackStackEntryCount()>0 ){
+		if(fm.getBackStackEntryCount()>0 && !toAdd){
 			fm.popBackStack();
 			fragmentTransaction.replace(R.id.content, fragment,tag);
 		}
@@ -64,6 +68,7 @@ public class MainActivity extends FragmentActivity {
 		fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
 		fragmentTransaction.commit();
 	}
+
 
 	private void initView() {
 		_title = (TextView) findViewById(R.id.navigation_title);

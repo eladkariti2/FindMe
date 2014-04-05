@@ -43,8 +43,8 @@ public class HomeFragment extends Fragment{
 			
 			@Override
 			public void onClick(View v) {
-				Fragment routeFragment = new RouteFragment();
-				((MainActivity) getActivity()).addFragment(routeFragment, true, "");			
+				Fragment userRouteFragment = new UserRoutsFragment();
+				((MainActivity) getActivity()).addFragment(userRouteFragment, true, "");			
 			}
 		});
 		

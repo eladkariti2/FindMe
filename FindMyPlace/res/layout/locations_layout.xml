@@ -54,10 +54,11 @@
 
         <EditText
             android:id="@+id/location_description_edit_text"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="top|right" />
+            android:layout_marginTop="5dp"
+            android:gravity="top|right"
+            android:hint="@string/location_name" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -9,4 +9,7 @@ public class APConstant {
     public final static String ROUTE_WALKING = "walking";
     public final static String ROUTE_LANGUAGE = "language";  
     public final static String ROUTE_REGION = "region"; 
+    
+    public final static String LOCATION_LANTITUDE = "locationLatitude";
+    public final static String LOCATION_LONGITUDE = "locationLongitude";
 }
