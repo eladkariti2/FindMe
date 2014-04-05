@@ -49,11 +49,13 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 	APModel _locationModel ;
 	Button _saveLocation;
 	ImageView _locationImage ;
-		
+	EditText _locationDescriptionEditText ;	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View layout = inflater	.inflate(R.layout.save_location_layout, container, false);
+		View layout = inflater.inflate(R.layout.save_location_layout, container, false);
+		_locationDescriptionEditText = (EditText)layout.findViewById(R.id.location_description_edit_text);
 		_saveLocation = (Button)layout.findViewById(R.id.save_location_button);
 
 		return layout;
@@ -94,7 +96,31 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
 			@Override
 			public void onClick(View v) {
-				saveLocation();	
+				//Check if the device has camera, if not then hide picture container
+				PackageManager pm = getActivity().getPackageManager();
+				boolean hasCamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+				if(!hasCamera){
+					DataBaseUtil.saveUserLocationInDB(getActivity(),_locationModel);
+				}else{
+					saveLocationWithIMG();
+				}
+			}
+		});
+		
+		_locationDescriptionEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {	
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				String name = new StringBuilder(s).toString();
+				_locationModel.setLocationDescription(name);
 			}
 		});
 	}
@@ -134,28 +160,31 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
 	}
 
-	private void saveLocation() {
+	private void saveLocationWithIMG() {
 
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.setContentView(R.layout.save_location_dialog);
-
-		EditText locationName = (EditText) dialog.findViewById(R.id.location_name);
+		dialog.setCanceledOnTouchOutside(true);
+		
 		Button cancelButton = (Button)dialog.findViewById(R.id.cancel_button);
 		Button okButton = (Button)dialog.findViewById(R.id.ok_button);
 		_locationImage = (ImageView)dialog.findViewById(R.id.location_image);
-		TextView address = (TextView)dialog.findViewById(R.id.address);
-		address.setText(_locationModel.getAddress());
 		
-		//Check if the device has camera, if not then hide picture container
-		PackageManager pm = getActivity().getPackageManager();
-		boolean hasCamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
-		_locationImage.setVisibility(hasCamera ? View.VISIBLE : View.GONE);
+		_locationImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dispatchTakePictureIntent();
+				
+			}
+		});
 
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				boolean result = DataBaseUtil.saveUserLocationInDB(getActivity(),_locationModel);
+				displaySaveLocationToast(result);
 				dialog.hide();
 			}
 		});
@@ -164,39 +193,17 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 			
 			@Override
 			public void onClick(View v) {		
-				DataBaseUtil.saveUserLocationInDB(getActivity(),_locationModel);
+				boolean isAdded = DataBaseUtil.saveUserLocationInDB(getActivity(),_locationModel);
+				displaySaveLocationToast(isAdded);		
 				dialog.hide();
 			}
 		});
 
-		locationName.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {	
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				String name = new StringBuilder(s).toString();
-			}
-		});
-
-		_locationImage.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				dispatchTakePictureIntent();
-			}
-		});
-
+		dialog.getWindow().setBackgroundDrawableResource(R.drawable.empty);
 		dialog.show();
 	}
 
-	//Strat 
+	
 
 	//Calling for app that can take picture and waite to result.
 	static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -216,14 +223,23 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-			Bundle extras = data.getExtras();
-			Log.d("ELAD",extras.toString());
-			Bitmap imageBitmap = (Bitmap) extras.get("data");
+//			Bundle extras = data.getExtras();
+//			Log.d("ELAD",extras.toString());
+//			Bitmap imageBitmap = (Bitmap) extras.get("data");
 			
-			_locationImage.setImageBitmap(imageBitmap);
+			//_locationImage.setImageBitmap(imageBitmap);
+			
+			
 		}
 	}
 
-	//End
+	private void displaySaveLocationToast(boolean isAdded) {
+		if (isAdded){
+			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_success),Toast.LENGTH_LONG).show();
+		}else{
+			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_success),Toast.LENGTH_LONG).show();
+		}
+		
+	}
 
 }

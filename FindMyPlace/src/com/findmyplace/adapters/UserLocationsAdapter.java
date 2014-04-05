@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.findmyplace.R;
 import com.findmyplace.model.APModel;
@@ -57,7 +58,7 @@ public class UserLocationsAdapter extends BaseAdapter {
 		View deleteIconContainer = convertView.findViewById(R.id.delete_icon_container);
 		
 		convertView.setTag(getItem(position));
-		deleteIconContainer.setTag(getItem(position));
+		deleteIconContainer.setTag(position);
 		
 		String address = _data.get(position).getAddress();
 		String description = _data.get(position).getLocationDescription();
@@ -78,12 +79,19 @@ public class UserLocationsAdapter extends BaseAdapter {
 		
 		@Override
 		public void onClick(View v) {
-			APModel model = (APModel)v.getTag();
-			String id = model.getID();
+			int position  = (Integer)v.getTag();
+			
+			String id = ((APModel)getItem(position)).getID();
 			if(DataBaseUtil.deleteLocation(_context,id))
 			{
+				_data.remove(position);
 				notifyDataSetChanged();
-			}		
+				
+				Toast.makeText(_context, _context.getString(R.string.location_item_remove_location_success),Toast.LENGTH_SHORT).show();
+			}
+			else{
+				Toast.makeText(_context, _context.getString(R.string.location_item_remove_location_success),Toast.LENGTH_SHORT).show();
+			}
 		}
 	};
 

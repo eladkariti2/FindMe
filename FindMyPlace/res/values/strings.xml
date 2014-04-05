@@ -1,6 +1,6 @@
 <resources>
 
-    <!-- 
+    <!--
     <string name="app_name">FindMyPlace</string>
     <string name="scheme_url_prefix">findmyplace</string>
     <string name="map_error">"Sorry! unable to create maps"</string>
@@ -12,24 +12,27 @@
     <string name="address_text">"Address: "</string>
     <string name="location_name">"Enter name "</string>
     <string name="address_image">"Take a picture"</string>
-    <string name="location_item_description_title">"Description:"</string>
-    
-     -->
-     
-     <!-- App strings -->
-     <string name="app_name">זכור אותי</string>
+    <string name="location_item_description_title">"Description:"</string>
+    -->
+
+
+    <!-- App strings -->
+    <string name="app_name">זכור אותי</string>
     <string name="scheme_url_prefix">findmyplace</string>
-     
-     
     <string name="map_error">"מצטערים! ארעה שגיאה"</string>
     <string name="gps_disable">"הפעל גי פי אס"</string>
     <string name="ok_button">"אישור"</string>
     <string name="cancel_button">"ביטול"</string>
+     <string name="skip_button">"דלג"</string>
     <string name="save_location">"שמור מיקום"</string>
     <string name="address_text">"כתובת: "</string>
     <string name="get_directions">"טען מסלול"</string>
     <string name="location_name">"הכנס כינוי"</string>
     <string name="address_image">"הוסף תמונה"</string>
     <string name="location_item_description_title">"תיאור:"</string>
-
+    
+    <string name="location_item_remove_location_success">"מיקום הוסר בהצלחה"</string>
+    <string name="location_item_remove_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
+    <string name="location_item_added_location_success">"מיקום הוסר בהצלחה"</string>
+    <string name="location_item_added_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
 </resources>

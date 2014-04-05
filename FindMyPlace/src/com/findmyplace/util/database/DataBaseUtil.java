@@ -12,7 +12,7 @@ import com.findmyplace.model.APParkingModel;
 
 public class DataBaseUtil {
 
-	public static void saveUserLocationInDB(Context context,APModel locationModel) {
+	public static boolean saveUserLocationInDB(Context context,APModel locationModel) {
 		String longitude = locationModel.getLongitude() + "";
 		String latitude = locationModel.getLatitude() + "";;
 		String imagePath = locationModel.getImage();
@@ -24,8 +24,9 @@ public class DataBaseUtil {
 		
 		RMDataBaseHandler dbHandler = new RMDataBaseHandler(context);
 		dbHandler.open();
-		dbHandler.insert( description, address, latitude, longitude, imagePath, "");
+		long result = dbHandler.insert( description, address, latitude, longitude, imagePath, "");
 		
+		return result > 0 ;
 	}
 
 	public static 	List<APModel> getAllLocations(Context context) {
