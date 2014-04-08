@@ -7,10 +7,13 @@ import com.findmyplace.model.MapModel.RMDirection;
 import com.findmyplace.model.MapModel.RMLegs;
 import com.findmyplace.model.MapModel.RMPath;
 import com.findmyplace.model.MapModel.RMPoint;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -65,8 +68,7 @@ public class MapUtil {
 			// Mark the last point of the path with a HUE_AZURE marker
 			map.addMarker(new MarkerOptions().position(legs.getEndPoint().getLatLng()).title(legs.getmEndAddress())
 					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-
-
+			
 			// A 5 width Polyline please
 			lineOptions.width(8);		
 			lineOptions.color(Color.BLUE);

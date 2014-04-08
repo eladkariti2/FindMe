@@ -12,9 +12,13 @@ import com.findmyplace.util.APConstant;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
 import com.findmyplace.util.database.DataBaseUtil;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -108,11 +112,36 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 	public void updateLocation(Location location) {
 		if(firsLocation){
 			firsLocation = !firsLocation;
-			drawerLayout.setVisibility(View.VISIBLE);
-			view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
+			
 			initilizeMap();
 			List<RMDirection> directions =  MapRouteUtil.getRoute(getActivity(), new LatLng(location.getLatitude(), location.getLongitude()), destinationLocation);
-			MapUtil.drawGDirection(directions.get(0), map);
+			RMDirection direction = directions.get(0);
+			MapUtil.drawGDirection(direction, map);
+			
+			
+			//center the point on map
+			LatLng northEast = direction.getmNorthEastBound();
+			LatLng southWest= direction.getmSouthWestBound();
+			
+			LatLngBounds.Builder builder = new LatLngBounds.Builder();		
+		    builder.include(northEast);
+		    builder.include(southWest);
+			LatLngBounds bounds = builder.build();
+			int padding = 100; // offset from edges of the map in pixels
+			final CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				
+				@Override
+				public void onMapLoaded() {
+					// TODO Auto-generated method stub
+					map.moveCamera(cu);
+					drawerLayout.setVisibility(View.VISIBLE);
+					view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
+				}
+			});
+			
+			
 		}else{
 			map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
 		}
