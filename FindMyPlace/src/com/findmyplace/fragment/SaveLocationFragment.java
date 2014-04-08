@@ -154,8 +154,10 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		getActivity().findViewById(R.id.save_location_container).setVisibility(View.VISIBLE);
 
 		_locationModel = new APParkingModel();
-		_locationModel.setLongitude(location.getLatitude());
-		_locationModel.setLatitude(location.getLongitude());
+		_locationModel.setLatitude(location.getLatitude());
+		_locationModel.setLongitude(location.getLongitude());
+		_locationModel.setLatitude(Double.parseDouble("31.894112"));
+		_locationModel.setLongitude(Double.parseDouble("34.811644"));
 		_locationModel.setAddress(addressText);
 
 	}
@@ -240,6 +242,21 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_success),Toast.LENGTH_LONG).show();
 		}
 		
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+
+		    try {
+		        SupportMapFragment fragment = (SupportMapFragment) getActivity()
+		                                          .getSupportFragmentManager().findFragmentById(
+		                                              R.id.map);
+		        if (fragment != null) getFragmentManager().beginTransaction().remove(fragment).commit();
+
+		    } catch (IllegalStateException e) {
+		    }
 	}
 
 }

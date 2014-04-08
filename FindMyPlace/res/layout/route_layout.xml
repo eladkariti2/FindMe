@@ -4,11 +4,17 @@
     android:layout_height="match_parent"
     android:background="@color/app_background" >
 
+    <ProgressBar android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress_bar"/>
+    
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000" >
+        android:background="#000000" 
+        android:visibility="gone">
 
         <fragment
             android:id="@+id/main_content"

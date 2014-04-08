@@ -67,7 +67,7 @@ public class UserRoutsFragment  extends Fragment implements LocationListenerI{
 	
 	@Override
 	public void updateLocation(Location location) {
-		// TODO Auto-generated method stub
+		
 		
 	} 
 
