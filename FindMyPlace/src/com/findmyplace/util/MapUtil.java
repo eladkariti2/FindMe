@@ -1,5 +1,8 @@
 package com.findmyplace.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.Color;
 
 import com.example.findmyplace.R;
@@ -51,8 +54,6 @@ public class MapUtil {
 		for (RMLegs legs : direction.getLegsList()) {
 			for (RMPath path : legs.getPathsList()) {
 
-				//lineOptions.add(path.getPath().get(0).getLatLng());
-				//lineOptions.add(path.getPath().get(path.getPath().size() -1).getLatLng());
 				// browse the GDPoint that define the path
 				for (RMPoint point : path.getPath()) {
 
@@ -76,6 +77,18 @@ public class MapUtil {
 			// Drawing polyline in the Google Map for the i-th route
 			map.addPolyline(lineOptions);
 		}
+	}
+
+	public static List<String>  getStoryPoint(RMDirection direction) {
+	    List<String> story = new ArrayList<String>();
+		
+		for (RMLegs legs : direction.getLegsList()) {
+			for (RMPath path : legs.getPathsList()) {
+				story.add(path.getHtmlText());
+			}
+
+		}	    
+		return story;
 	}
 
 

@@ -156,8 +156,6 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		_locationModel = new APParkingModel();
 		_locationModel.setLatitude(location.getLatitude());
 		_locationModel.setLongitude(location.getLongitude());
-		_locationModel.setLatitude(Double.parseDouble("31.894112"));
-		_locationModel.setLongitude(Double.parseDouble("34.811644"));
 		_locationModel.setAddress(addressText);
 
 	}
