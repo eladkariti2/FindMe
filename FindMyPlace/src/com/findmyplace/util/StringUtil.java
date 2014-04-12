@@ -38,6 +38,7 @@ public class StringUtil {
         String country = "";
         Geocoder geoCoder = new Geocoder(context,
                 Locale.getDefault());
+        Log.i("StringUtil", " Locale.getDefault(): " +  Locale.getDefault());
         try {
             List<Address> addresses = geoCoder.getFromLocation(
                     point.getLatitudeE6() / 1E6,

@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.findmyplace.R;
 import com.findmyplace.model.APModel;
+import com.findmyplace.util.OSUtil;
+import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
 
 public class UserLocationsAdapter extends BaseAdapter {
@@ -56,6 +58,7 @@ public class UserLocationsAdapter extends BaseAdapter {
 		TextView addressTextView = (TextView)convertView.findViewById(R.id.address);
 		TextView descriptionTextView = (TextView)convertView.findViewById(R.id.decription);
 		View deleteIconContainer = convertView.findViewById(R.id.delete_icon_container);
+		ImageView locationImg = (ImageView)convertView.findViewById(R.id.image);
 		
 		convertView.setTag(getItem(position));
 		deleteIconContainer.setTag(position);
@@ -66,6 +69,10 @@ public class UserLocationsAdapter extends BaseAdapter {
 		addressTextView.setText(address);
 		descriptionTextView.setText(description);
 		
+		String imaString = _data.get(position).getImage();
+		if(!StringUtil.isEmpty(imaString) && OSUtil.hasExternalStoragePrivateFile(_context, imaString)){
+			locationImg.setImageBitmap(OSUtil.getLocationPicture(_context, _data.get(position).getImage()));
+		}
 		
 		deleteIconContainer.setOnClickListener(deleteClickListenr);
 		

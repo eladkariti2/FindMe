@@ -33,6 +33,6 @@
     
     <string name="location_item_remove_location_success">"מיקום הוסר בהצלחה"</string>
     <string name="location_item_remove_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
-    <string name="location_item_added_location_success">"מיקום הוסר בהצלחה"</string>
+    <string name="location_item_added_location_success">"מיקום נוסף בהצלחה"</string>
     <string name="location_item_added_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.findmyplace.fragment;
 
+import java.io.File;
 import java.util.List;
 
 import android.app.Dialog;
@@ -8,11 +9,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +36,7 @@ import com.findmyplace.model.MapModel.RMDirection;
 import com.findmyplace.providers.MyImageProvider;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
+import com.findmyplace.util.OSUtil;
 import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -211,7 +215,8 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 	private void dispatchTakePictureIntent() {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, MyImageProvider.CONTENT_URI);
+			//takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, MyImageProvider.CONTENT_URI);
+			File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
 			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 		}
 	}
@@ -223,11 +228,18 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-//			Bundle extras = data.getExtras();
-//			Log.d("ELAD",extras.toString());
-//			Bitmap imageBitmap = (Bitmap) extras.get("data");
+			Bundle extras = data.getExtras();
 			
-			//_locationImage.setImageBitmap(imageBitmap);
+			Time now = new Time();
+			now.setToNow();
+			String path = "" + now.toMillis(false);
+			
+			Bitmap imageBitmap = (Bitmap) extras.get("data");
+			if (OSUtil.saveLocationPicture(getActivity(), path,imageBitmap)){
+				_locationModel.setImage(path);
+			}
+
+			_locationImage.setImageBitmap(imageBitmap);
 			
 			
 		}
@@ -237,7 +249,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		if (isAdded){
 			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_success),Toast.LENGTH_LONG).show();
 		}else{
-			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_success),Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), getActivity().getString(R.string.location_item_added_location_unsuccess),Toast.LENGTH_LONG).show();
 		}
 		
 	}

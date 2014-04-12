@@ -23,6 +23,7 @@ import com.findmyplace.fragment.HomeFragment;
 import com.findmyplace.fragment.RouteFragment;
 import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.listenr.APLocationListenr;
+import com.findmyplace.util.OSUtil;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends FragmentActivity {
@@ -39,6 +40,8 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.base_activity);
 
+		OSUtil.setLocale(this, "he");
+		
 		initView();
 		
 		_currentFrgment = new HomeFragment();

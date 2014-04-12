@@ -1,9 +1,12 @@
 package com.findmyplace.fragment;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.example.findmyplace.R;
 import com.findmyplace.activites.MainActivity;
+import com.findmyplace.adapters.RouteStoryAdapter;
 import com.findmyplace.adapters.UserLocationsAdapter;
 import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.model.APModel;
@@ -44,44 +47,45 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 	ActionBarDrawerToggle drawerToggle;
 	boolean isMenuOpen = false;
 	boolean firsLocation = true;
+	boolean displayZoom = false;
 	View view;
 	GoogleMap map;
 	RMDirection direction;
 	LatLng destinationLocation;
 	Location currentLocation;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		 view = inflater.inflate(R.layout.route_layout, container, false);
-			
+		view = inflater.inflate(R.layout.route_layout, container, false);
+
 		return view;
-		
+
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);	
 		((MainActivity)getActivity()).startLocationListener(); 
-		
+
 		Bundle b = getArguments();
 		double latitude = b.getDouble(APConstant.LOCATION_LANTITUDE);
 		double longitude = b.getDouble(APConstant.LOCATION_LONGITUDE);
 		destinationLocation = new LatLng(latitude, longitude);
-		
+
 		initView();
-		
+
 	}
-	
+
 	private void initView() {
-	
+
 		drawerLayout = (DrawerLayout) view.findViewById(R.id.drawerLayout);
 		drawerMenuContainer = view.findViewById(R.id.drawerMenuContainer);
 
 		drawerList = (ListView)drawerMenuContainer.findViewById(R.id.list_route_story);
-		
-	
+
+
 		//Enable the menu toggle only while the activity is about to display.
 		//menuButtonsContainer.setOnClickListener(menuClickListener);
 
@@ -108,48 +112,71 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 
 	}
 
-	
+
 	@Override
 	public void updateLocation(Location location) {
 		if(firsLocation){
 			firsLocation = !firsLocation;
-			
+
 			initilizeMap();
 			setupMap(location);		
 			setupStoryPoint();
-			
+
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					final CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+					getActivity().runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							map.moveCamera(zoom);
+							map.setMyLocationEnabled(true);
+							displayZoom = true;
+						}
+					});
+
+				}
+			}, 2000);
+
 		}else{
-			map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
+			if(displayZoom){
+				LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+				CameraUpdate center= CameraUpdateFactory.newLatLng(position);			
+				map.moveCamera(center);
+			}
+			//map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
 		}
-		
+
 	}
 
 	private void setupStoryPoint() {
 		List<String> story =  MapUtil.getStoryPoint(direction);
-		
-		
-		
+		RouteStoryAdapter adapter = new RouteStoryAdapter(getActivity(), story);
+		drawerList.setAdapter(adapter);
 	}
 
 	private void setupMap(Location location) {
 		List<RMDirection> directions =  MapRouteUtil.getRoute(getActivity(), new LatLng(location.getLatitude(), location.getLongitude()), destinationLocation);
-	    direction = directions.get(0);
+		direction = directions.get(0);
 		MapUtil.drawGDirection(direction, map);
-		
-		
+
 		//center the point on map
 		LatLng northEast = direction.getmNorthEastBound();
 		LatLng southWest= direction.getmSouthWestBound();
-		
+
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();		
-	    builder.include(northEast);
-	    builder.include(southWest);
+		builder.include(northEast);
+		builder.include(southWest);
 		LatLngBounds bounds = builder.build();
 		int padding = 100; // offset from edges of the map in pixels
 		final CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 
 		map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			
+
 			@Override
 			public void onMapLoaded() {
 				// TODO Auto-generated method stub
@@ -158,7 +185,7 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 				view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
 			}
 		});
-		
+
 	}
 
 	/**
@@ -177,19 +204,19 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 			}
 		}
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 
-		    try {
-		        SupportMapFragment fragment = (SupportMapFragment) getActivity()
-		                                          .getSupportFragmentManager().findFragmentById(
-		                                              R.id.main_content);
-		        if (fragment != null) getFragmentManager().beginTransaction().remove(fragment).commit();
+		try {
+			SupportMapFragment fragment = (SupportMapFragment) getActivity()
+					.getSupportFragmentManager().findFragmentById(
+							R.id.main_content);
+			if (fragment != null) getFragmentManager().beginTransaction().remove(fragment).commit();
 
-		    } catch (IllegalStateException e) {
-		    }
+		} catch (IllegalStateException e) {
+		}
 	}
 }
