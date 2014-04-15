@@ -7,11 +7,14 @@ import java.util.TimerTask;
 import com.example.findmyplace.R;
 import com.findmyplace.activites.MainActivity;
 import com.findmyplace.adapters.RouteStoryAdapter;
+import com.findmyplace.adapters.TitleLocationInfoAdapter;
 import com.findmyplace.adapters.UserLocationsAdapter;
 import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.model.APModel;
 import com.findmyplace.model.MapModel.RMDirection;
 import com.findmyplace.model.MapModel.RMLegs;
+import com.findmyplace.storyPointUtil.StoryPointBuilder;
+import com.findmyplace.storyPointUtil.StoryPointHolder;
 import com.findmyplace.util.APConstant;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
@@ -21,8 +24,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -53,7 +59,8 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 	RMDirection direction;
 	LatLng destinationLocation;
 	Location currentLocation;
-
+	Timer timer ;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -76,6 +83,13 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 
 		initView();
 
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		// Set the drawer toggle as the DrawerListener
+		drawerLayout.setDrawerListener(drawerToggle);//TO DO check if there is better implementation for the listener.
 	}
 
 	private void initView() {
@@ -147,6 +161,7 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 				LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
 				CameraUpdate center= CameraUpdateFactory.newLatLng(position);			
 				map.moveCamera(center);
+				displayZoom = false;
 			}
 			//map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
 		}
@@ -154,9 +169,54 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 	}
 
 	private void setupStoryPoint() {
-		List<String> story =  MapUtil.getStoryPoint(direction);
-		RouteStoryAdapter adapter = new RouteStoryAdapter(getActivity(), story);
+	   List<StoryPointHolder> storyPoints = StoryPointBuilder.getStoryPointHolder(getActivity(), direction);
+		RouteStoryAdapter adapter = new RouteStoryAdapter(getActivity(), storyPoints);
+	
 		drawerList.setAdapter(adapter);
+		drawerList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				   toggelMenu();
+					StoryPointHolder holder = (StoryPointHolder) view.getTag();
+					if(!"true".equals(holder.getExtention(StoryPointBuilder.IS_FULL_ROUTE, "false"))){
+						LatLng location = holder.getLocation();
+						CameraUpdate center= CameraUpdateFactory.newLatLng(location);			
+						map.moveCamera(center);
+						// Mark each path of the path with marker
+						final Marker marker = map.addMarker(new MarkerOptions().position(location).title(holder.getTitle())
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+					
+						marker.showInfoWindow();
+						
+						if(timer != null){
+							timer.cancel();
+							timer = null;
+							timer = new Timer();
+							timer.schedule(new TimerTask() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									 marker.setVisible(false);
+	
+								}
+							}, 2000);
+						}			
+				}
+			}
+		});
+	}
+
+	protected synchronized void toggelMenu() {
+		if (isMenuOpen) {
+			drawerLayout.closeDrawer(drawerMenuContainer);
+		} else {
+			drawerLayout.openDrawer(drawerMenuContainer);
+		}
+		isMenuOpen = !isMenuOpen;
 	}
 
 	private void setupMap(Location location) {
@@ -195,12 +255,13 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 		if (map == null) {
 			SupportMapFragment fragment = (SupportMapFragment) (getActivity().getSupportFragmentManager().findFragmentById(R.id.main_content));
 			map = fragment.getMap();
-
 			// check if map is created successfully or not
 			if (map == null) {
 				Toast.makeText(getActivity(),
 						getActivity().getString(R.string.map_error), Toast.LENGTH_SHORT)
 						.show();
+			}else{
+				map.setInfoWindowAdapter(new TitleLocationInfoAdapter(getActivity()));
 			}
 		}
 	}

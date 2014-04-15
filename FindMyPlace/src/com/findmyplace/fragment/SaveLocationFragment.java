@@ -138,11 +138,9 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 	@Override
 	public void updateLocation(Location location) {
 		Log.d("SaveLocationFragment", "Location - latitude: " + location.getLatitude() +", longitude: " + location.getLongitude());
-		int lat = (int) (location.getLatitude() * 1E6);
-		int lng = (int) (location.getLongitude() * 1E6);
-		GeoPoint point = new GeoPoint(lat,lng);	
-		String addressText = StringUtil.ConvertPointToLocation(getActivity(), point);	
-
+		
+		String addressText = MapUtil.getAddrres(getActivity(),location.getLatitude(),location.getLongitude() );
+		
 		TextView address = (TextView)getActivity().findViewById(R.id.address_name);
 		address.setText(addressText);
 
@@ -160,6 +158,10 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		_locationModel = new APParkingModel();
 		_locationModel.setLatitude(location.getLatitude());
 		_locationModel.setLongitude(location.getLongitude());
+		
+		_locationModel.setLatitude(31.883608);
+		_locationModel.setLongitude(34.785845);
+		
 		_locationModel.setAddress(addressText);
 
 	}

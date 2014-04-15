@@ -27,9 +27,9 @@ public class StringUtil {
 
 	public static String parseHtml(String html) {
 		String str = null;
-
-		Document doc = Jsoup.parse(html);
-		Elements obj = doc.select("b");
+		
+		str = android.text.Html.fromHtml(html).toString();
+		
 		return str;
 	}
 	
@@ -58,5 +58,7 @@ public class StringUtil {
         String result = address  + ", " + country;
         return result;
     }
-
+	
+	
+	
 }
