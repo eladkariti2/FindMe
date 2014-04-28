@@ -13,4 +13,15 @@ public class FindMyPlace extends Application {
 		super.onCreate();
 	
 	}
+	
+	@Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        onConfigurationChangedBehaviour(this,newConfig);        
+    }  
+ 
+
+    public static void onConfigurationChangedBehaviour(Application context, Configuration newConfig) {
+    	
+    }
 }

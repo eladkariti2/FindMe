@@ -12,4 +12,8 @@ public class APConstant {
     
     public final static String LOCATION_LANTITUDE = "locationLatitude";
     public final static String LOCATION_LONGITUDE = "locationLongitude";
+    
+    public final static int PICK_CONTACT = 3;
+  //Calling for app that can take picture and waite to result.
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
 }

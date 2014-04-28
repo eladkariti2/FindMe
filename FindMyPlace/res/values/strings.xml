@@ -35,4 +35,9 @@
     <string name="location_item_remove_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
     <string name="location_item_added_location_success">"מיקום נוסף בהצלחה"</string>
     <string name="location_item_added_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
+    
+    
+     <string name="share_location_message">"היי אני משתמש באפליקציית FindMe \n אני נמצא ב "</string>
+     <string name="find_me_scheme">"findmyplace://navigate?location="</string>
+     <string name="waze_scheme">"waze://"</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.findmyplace.fragment;
 
-import java.io.File;
 import java.util.List;
 
 import android.app.Dialog;
@@ -9,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -33,18 +31,16 @@ import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.model.APModel;
 import com.findmyplace.model.APParkingModel;
 import com.findmyplace.model.MapModel.RMDirection;
-import com.findmyplace.providers.MyImageProvider;
+import com.findmyplace.util.APConstant;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
 import com.findmyplace.util.OSUtil;
-import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.maps.GeoPoint;
 
 public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
@@ -61,7 +57,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		View layout = inflater.inflate(R.layout.save_location_layout, container, false);
 		_locationDescriptionEditText = (EditText)layout.findViewById(R.id.location_description_edit_text);
 		_saveLocation = (Button)layout.findViewById(R.id.save_location_button);
-
+		_locationModel = new APParkingModel();
 		return layout;
 	}
 
@@ -155,7 +151,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		getActivity().findViewById(R.id.progrees_bar).setVisibility(View.GONE);
 		getActivity().findViewById(R.id.save_location_container).setVisibility(View.VISIBLE);
 
-		_locationModel = new APParkingModel();
+		
 		_locationModel.setLatitude(location.getLatitude());
 		_locationModel.setLongitude(location.getLongitude());
 		
@@ -211,15 +207,12 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 
 	
 
-	//Calling for app that can take picture and waite to result.
-	static final int REQUEST_IMAGE_CAPTURE = 1;
+	
 
 	private void dispatchTakePictureIntent() {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-			//takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, MyImageProvider.CONTENT_URI);
-			File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+			startActivityForResult(takePictureIntent,APConstant.REQUEST_IMAGE_CAPTURE);
 		}
 	}
 
@@ -229,7 +222,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+		if ( resultCode == getActivity().RESULT_OK) {
 			Bundle extras = data.getExtras();
 			
 			Time now = new Time();

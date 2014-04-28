@@ -1,14 +1,11 @@
 package com.findmyplace.activites;
 
 
-import java.util.Locale;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.findmyplace.R;
@@ -28,6 +26,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends FragmentActivity {
 
+	private static String Tag = "MainActivity";
+	
 	LatLng _currentPosition ;
 	LocationManager _locationManager;
 	Fragment _currentFrgment;
@@ -38,6 +38,18 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(Tag,"oncreate");
+		
+		
+		if(!UrlSchemeUtil.parseData(getIntent().getData())){
+			if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) { 
+		        // Activity was brought to front and not created, 
+		        // Thus finishing this will get us to the last viewed activity 
+		        finish(); 
+		        return; 
+		    } 
+		}
+		
 		setContentView(R.layout.base_activity);
 
 		OSUtil.setLocale(this, "he");
@@ -136,9 +148,48 @@ public class MainActivity extends FragmentActivity {
 		alert.show();
 	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.d(Tag,"onResume");
+	}
 	
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		Log.d(Tag,"onStart");
+	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		Log.d(Tag,"oncreonStopate");
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.d(Tag,"onDestroy");
+	}
 	
 	public void updateTitle(String title){
 		_title.setText(title);
 	}
+	
+//	protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+//		// TODO Auto-generated method stub
+//		super.onActivityResult(requestCode, resultCode, data);
+//		if(requestCode == APConstant.REQUEST_IMAGE_CAPTURE ){
+//			
+//			((SaveLocationFragment)_currentFrgment).onActivityResult(requestCode, resultCode, data);
+//			
+//		}else if(requestCode == APConstant.PICK_CONTACT ){
+//			((UserRoutsFragment)_currentFrgment).onActivityResult(requestCode, resultCode, data);
+//		}
+//	}
+	
+	
 }

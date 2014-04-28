@@ -186,28 +186,39 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 						CameraUpdate center= CameraUpdateFactory.newLatLng(location);			
 						map.moveCamera(center);
 						// Mark each path of the path with marker
-						final Marker marker = map.addMarker(new MarkerOptions().position(location).title(holder.getTitle())
-								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-					
-						marker.showInfoWindow();
-						
-						if(timer != null){
-							timer.cancel();
-							timer = null;
-							timer = new Timer();
-							timer.schedule(new TimerTask() {
-								
-								@Override
-								public void run() {
-									// TODO Auto-generated method stub
-									 marker.setVisible(false);
-	
-								}
-							}, 2000);
-						}			
+					    Marker marker = map.addMarker(new MarkerOptions().position(location).title(holder.getTitle())
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));					
+						marker.showInfoWindow();						
+						stopTimer();						
+						startTimer(marker);		
 				}
 			}
 		});
+	}
+
+	protected void startTimer(final Marker marker) {
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				RouteFragment.this.getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						 marker.remove();
+					}
+				});
+			}
+		}, 2500);
+	}
+
+	protected void stopTimer() {
+		if(timer != null){
+			timer.cancel();
+			timer = null;
+		}
 	}
 
 	protected synchronized void toggelMenu() {
