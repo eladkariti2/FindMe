@@ -52,13 +52,16 @@
             android:id="@+id/send_icon_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:visibility="visible" >
 
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentTop="true"
-                android:background="@color/location_item_action_divider_bg" >
+                android:background="@color/location_item_action_divider_bg"
+                android:visibility="visible" >
             </LinearLayout>
 
             <ImageView

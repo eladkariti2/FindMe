@@ -77,50 +77,6 @@ public class UserRoutsFragment  extends Fragment {
 	}
 
 
-	private void sendMessage(String number, String location, String description, String address) {
-		Log.v("UserRoutsFragment","phoneNumber" + number);
-		String message = getActivity().getString(R.string.share_location_message);
-		String findMeScheme = getActivity().getString(R.string.find_me_scheme);
-		
-		//findMeScheme += location;
-		message = message +  description + "\n" + address; 
-		
-		//message += message + "\n" + findMeScheme;
-		Log.v("UserRoutsFragment", "Message = " + message);
-              
-	    String SENT = "SMS_SENT";
-	    String DELIVERED = "SMS_DELIVERED";
-		PendingIntent sentPI = PendingIntent.getBroadcast(UserRoutsFragment.this.getActivity(), 0,
-                new Intent(SENT), 0);
-
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(UserRoutsFragment.this.getActivity(),
-                0, new Intent(DELIVERED), 0);
-
-
-
-        // ---when the SMS has been delivered---
-        getActivity().registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode()) {
-                case Activity.RESULT_OK:
-                    Toast.makeText(UserRoutsFragment.this.getActivity(), "SMS delivered",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                case Activity.RESULT_CANCELED:
-                    Toast.makeText(UserRoutsFragment.this.getActivity(), "SMS not delivered",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                }
-            }
-        }, new IntentFilter(DELIVERED));
-
-  
-		
-		SmsManager sms = SmsManager.getDefault();
-		sms.sendTextMessage(number, null, message, sentPI, deliveredPI);
-	}
-
 	
 	public void updateShareModel(APModel model){
 		_shareModel = model;
@@ -151,7 +107,7 @@ public class UserRoutsFragment  extends Fragment {
 					phones.moveToFirst();
 					String cNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 					
-					sendMessage(cNumber,_shareModel.getLongitude() + "," + _shareModel.getLatitude(),_shareModel.getLocationDescription(),_shareModel.getAddress());
+				//	sendMessage(cNumber,_shareModel.getLongitude() + "," + _shareModel.getLatitude(),_shareModel.getLocationDescription(),_shareModel.getAddress());
 				}
 			}
 			

@@ -38,6 +38,7 @@
     
     
      <string name="share_location_message">"היי אני משתמש באפליקציית FindMe \n אני נמצא ב "</string>
-     <string name="find_me_scheme">"findmyplace://navigate?location="</string>
-     <string name="waze_scheme">"waze://"</string>
+     <string name="find_me_scheme">"http://findmyplace://navigate?location="</string>
+
+  	<string name="app_id">"743843289000888"</string>
 </resources>

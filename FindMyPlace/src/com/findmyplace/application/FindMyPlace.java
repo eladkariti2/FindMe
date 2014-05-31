@@ -1,16 +1,18 @@
 package com.findmyplace.application;
 
-import java.util.Locale;
-
 import android.app.Application;
+import android.content.Context;
 import android.content.res.Configuration;
 
 public class FindMyPlace extends Application {
 
+	protected static Context context;
+	
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		context = this;
 	
 	}
 	
@@ -24,4 +26,8 @@ public class FindMyPlace extends Application {
     public static void onConfigurationChangedBehaviour(Application context, Configuration newConfig) {
     	
     }
+
+	public static Context getAppContext(){
+		return context;
+	}
 }

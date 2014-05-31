@@ -1,19 +1,18 @@
 package com.findmyplace.util;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import com.google.android.maps.GeoPoint;
 
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
 
 public class StringUtil {
 
@@ -59,6 +58,13 @@ public class StringUtil {
         return result;
     }
 	
+	public static String getFBExpirationDate(long time){
+		String dateStr = programDF.format(new Date(time));
+		Log.d("StringUtil","FBExpirationDate:: " + dateStr);
+		return dateStr;
+	}
 	
 	
+	
+	public static final DateFormat programDF = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z");
 }

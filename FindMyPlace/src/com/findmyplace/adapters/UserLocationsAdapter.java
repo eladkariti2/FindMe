@@ -18,9 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.findmyplace.R;
+import com.facebook.android.Facebook;
 import com.findmyplace.fragment.UserRoutsFragment;
 import com.findmyplace.model.APModel;
 import com.findmyplace.util.APConstant;
+import com.findmyplace.util.FacebookUtil;
 import com.findmyplace.util.OSUtil;
 import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
@@ -86,9 +88,9 @@ public class UserLocationsAdapter extends BaseAdapter {
 			locationImg.setImageBitmap(OSUtil.getLocationPicture(_context, _data.get(position).getImage()));
 		}
 
-		sendMessageIconContainer.setOnClickListener(sendMessageClickListenr);
-		sendMessageIconContainer.setOnClickListener(sendMessageClickListenr);
-		shareIconContainer.setOnClickListener(deleteClickListenr);
+		sendMessageIconContainer.setOnClickListener(shareClickListenr);
+		sendMessageIconContainer.setOnClickListener(shareClickListenr);
+		shareIconContainer.setOnClickListener(shareClickListenr);
 
 		convertView.setTag(getItem(position));
 
@@ -128,6 +130,18 @@ public class UserLocationsAdapter extends BaseAdapter {
 			Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 			((UserRoutsFragment)_fragment).startActivityForResult(intent, APConstant.PICK_CONTACT);
 			
+			
+		}
+	};
+	
+	OnClickListener shareClickListenr = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			int position  = (Integer)v.getTag();
+			APModel model = ((APModel)getItem(position));
+			
+			FacebookUtil.loginTofacebook(_context);
 			
 		}
 	};
