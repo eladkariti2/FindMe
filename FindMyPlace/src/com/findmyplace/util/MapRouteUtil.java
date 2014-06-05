@@ -8,6 +8,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.findmyplace.model.MapModel.RMDirection;
@@ -15,9 +16,36 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MapRouteUtil {
 
+	private final static String IMAGE_URL = "http://maps.google.com/maps/api/staticmap?";//center=" + 0 + "," + 1 + "&zoom=15&size=200x200&sensor=false";
 	private final static  String PREFIX = "http://maps.googleapis.com/maps/api/directions/json?";
 	static String TAG = "MapRouteUtil";
 
+	public static Drawable getLocationStaticImage(Context context,LatLng source){
+		Drawable drawble = null;
+		String location = "" + source.latitude + "," + source.longitude;
+		
+		Log.d(TAG, "Location for image: Source = " + location );
+				
+		String routeURL = createStaticImageURL(location);
+		try {
+			 drawble = ServerUtil.loadImage(routeURL,true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return drawble;
+	}
+	
+	public static String getLocationStaticImageURL(String location){
+		
+		Log.d(TAG, "Location for image: Source = " + location );
+				
+		String routeURL = createStaticImageURL(location);
+		
+		Log.i(TAG, "getLocationStaticImageURL Url: " + routeURL);
+		return routeURL;
+	}
+	
 	public static List<RMDirection> getRoute(Context context,LatLng source,LatLng destenation)
 	{
 		List<RMDirection> directions = null;
@@ -38,6 +66,25 @@ public class MapRouteUtil {
 		return  directions;
 	}
 
+	
+	private static String createStaticImageURL(String sourceString) {
+
+		String routeURL = IMAGE_URL;
+
+		HashMap< String, String> dic = new  HashMap<String, String>();
+
+		dic.put(APConstant.CENTER, sourceString);
+		dic.put(APConstant.MAP_MARKER, sourceString);
+		dic.put(APConstant.ROUTE_SENSOR, "false");
+		dic.put(APConstant.MAP_SIZE, "300x300");
+		dic.put(APConstant.ROUTE_REGION, "he");
+		dic.put(APConstant.ZOOM, "15");
+		routeURL += mapAsString(dic);
+		
+		return routeURL;
+	}
+	
+	
 	private static String createURL(String sourceString, String destenationString) {
 
 		String routeURL = PREFIX;

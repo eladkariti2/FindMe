@@ -8,6 +8,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.google.android.gms.internal.bm;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 public class ServerUtil {
@@ -61,6 +67,31 @@ public class ServerUtil {
 
              return json;
      }
+	 
+	 public static Drawable loadImage(String urlParam, boolean doCache) throws Exception
+     {
+		 Drawable result =  null;
+             URL url = new URL(urlParam);
+             String json = null;
+             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+             
+             try 
+             {
+                     Log.i(ServerUtil.class.getSimpleName(), "loadImage Url: " + urlParam);
+                     
+                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                     Bitmap bmp = BitmapFactory.decodeStream(in);
+                    
+                     result = new BitmapDrawable(bmp);
+             }
+             finally 
+             {
+                     urlConnection.disconnect();
+             }
+
+             return result;
+     }
+	 
 	 
      private static HttpURLConnection addHeadersToConnections(
 			HttpURLConnection urlConnection) {

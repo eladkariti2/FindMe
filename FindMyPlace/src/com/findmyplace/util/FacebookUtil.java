@@ -1,19 +1,23 @@
 package com.findmyplace.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.facebook.AccessToken;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.SessionState;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
+import com.findmyplace.Facebook.FacebookAction;
+import com.findmyplace.Facebook.FacebookPermissions;
 
 
 public class FacebookUtil {
@@ -46,15 +50,15 @@ public class FacebookUtil {
 	}
 
 	// Which permissions should be requested
-	public static FBPermissions getApplicationFBPermissions(){
+	public static FacebookPermissions getApplicationFBPermissions(){
 
-		FBPermissions result = new FBPermissions();
+		FacebookPermissions result = new FacebookPermissions();
 		result.setPublishPermissions(PUBLISH_PERMISSIONS);
 
 		return result;
 	}
 
-	public static boolean publishPermissionRequestHasChanged(Session session, FBPermissions newPermissions){
+	public static boolean publishPermissionRequestHasChanged(Session session, FacebookPermissions newPermissions){
 		boolean result = false;
 		if(newPermissions.getPublishPermissions()!= null){
 			result = !isSubsetOf(newPermissions.getPublishPermissions(), session.getPermissions());
@@ -63,7 +67,7 @@ public class FacebookUtil {
 
 	}
 
-	public static boolean readPermissionRequestHasChanged(Session session, FBPermissions newPermissions){
+	public static boolean readPermissionRequestHasChanged(Session session, FacebookPermissions newPermissions){
 		boolean result = false;
 		if(newPermissions.getReadPermissions()!= null){
 			result = !isSubsetOf(newPermissions.getReadPermissions(), session.getPermissions());
@@ -100,47 +104,79 @@ public class FacebookUtil {
 			session.openForRead(new Session.OpenRequest((Activity) context));
 		}
 	}
+	
+	public static void postFeedTofacebook(Context context){
+
+		Session session = Session.getActiveSession();
+		if(!isTokenValid()){
+			session.openForRead(new Session.OpenRequest((Activity) context));
+		}
+	}
+	
 
 	//this is facebook session listener
 	public  static class SessionStatusCallback implements Session.StatusCallback {
 
 		Context context;
 		Session.StatusCallback callbackDelegate;
-
+		boolean hasPendingPublishPermissions = true;
+		boolean hasPendingReadPermissions = true;
+		
 		public SessionStatusCallback(Context context,Session.StatusCallback callbackDelegate){
+			this.context = context;
+			this.callbackDelegate = callbackDelegate;
+		}
+		
+		public SessionStatusCallback(Context context,Session.StatusCallback callbackDelegate,String action){
 			this.context = context;
 			this.callbackDelegate = callbackDelegate;
 		}
 
 		@Override
 		public void call(Session session, SessionState state,Exception exception) {
+
 			switch (state) {
 			case OPENED:
-				Log.d(TAG,"session OPENED");
-				Log.d(TAG,"onComplete ");
-				Log.d(TAG,"permissions " + session.getPermissions());
+				Log.d("APFacebookAuth","session OPENED");
+				Log.d("APFacebookAuth","onComplete ");
+				Log.d("APFacebookAuth","permissions " + session.getPermissions());
 
+				
 				FacebookUtil.setFBAuthToken(context, session.getAccessToken());
 				Log.d("APFacebookAuth","access token is " + session.getAccessToken());
-
 				FacebookUtil.setFBTokenExpiration(context,session.getExpirationDate().getTime());
-
-				if(FacebookUtil.publishPermissionRequestHasChanged(session, FacebookUtil.getApplicationFBPermissions())){
+				
+				if(hasPendingPublishPermissions && FacebookUtil.publishPermissionRequestHasChanged(session, FacebookUtil.getApplicationFBPermissions())){
 					session.requestNewPublishPermissions(new NewPermissionsRequest((Activity) context, FacebookUtil.PUBLISH_PERMISSIONS));
+					hasPendingPublishPermissions = false;
 				}
-				else if(FacebookUtil.readPermissionRequestHasChanged(session, FacebookUtil.getApplicationFBPermissions())){
+				else if(hasPendingReadPermissions && FacebookUtil.readPermissionRequestHasChanged(session, FacebookUtil.getApplicationFBPermissions())){
 					session.requestNewReadPermissions(new NewPermissionsRequest((Activity) context, FacebookUtil.EXTENDED_READ_PERMISSIONS));
+					hasPendingReadPermissions = false;
 				}
 				break;
 
 			case OPENED_TOKEN_UPDATED:
 				Log.d("APFacebookAuth","session OPENED_TOKEN_UPDATED");
+				if(!hasPendingPublishPermissions && !hasPendingReadPermissions){
+//					onSuccefullyFinished();
+				}
+				else if(hasPendingPublishPermissions){
+					session.requestNewPublishPermissions(new NewPermissionsRequest((Activity) context, FacebookUtil.PUBLISH_PERMISSIONS));
+					hasPendingPublishPermissions = false;
+				}
+				else if (hasPendingReadPermissions){
+					session.requestNewReadPermissions(new NewPermissionsRequest((Activity) context, FacebookUtil.EXTENDED_READ_PERMISSIONS));
+					hasPendingReadPermissions = false;
+				}
+
 				break;
 			case CLOSED:
 				Log.d("APFacebookAuth","session CLOSED");
 				break;
 			case CLOSED_LOGIN_FAILED:
 				Log.d("APFacebookAuth","CLOSED_LOGIN_FAILED state " + exception.getMessage());
+				
 				break;
 			case CREATED:
 				Log.d("APFacebookAuth","session CREATED");
@@ -154,43 +190,72 @@ public class FacebookUtil {
 
 			}
 
-			if(callbackDelegate != null){
-				callbackDelegate.call(session, state, exception);
-			}
-
 		}
 	}
 
 
-	public static class FBPermissions{
-		private List<String> readPermissions;
-		private List<String> publishPermissions;
-
-		public List<String> getPermissions(){
-			ArrayList<String> permissions = new ArrayList<String>();
-			if(publishPermissions!= null){
-				permissions.addAll(publishPermissions);
-			}
-			if(readPermissions!= null){
-				permissions.addAll(readPermissions);
-			}
-
-			return permissions;
-		}
-
-		public List<String> getReadPermissions() {
-			return readPermissions;
-		}
-		public void setReadPermissions(List<String> readPermissions) {
-			this.readPermissions = readPermissions;
-		}
-		public List<String> getPublishPermissions() {
-			return publishPermissions;
-		}
-		public void setPublishPermissions(List<String> publishPermissions) {
-			this.publishPermissions = publishPermissions;
-		}
-
-
+	public static void postLocation(Context context,String location,String description,String name) {
+		FacebookAction action = new FacebookAction();
+		action.setName(name);
+		action.setDescription(description);
+		action.setName(name);
+		String imageURL = MapRouteUtil.getLocationStaticImageURL(location);
+		action.setPicture(imageURL);
+		postAction(action,context);
 	}
+
+	private static void postAction(FacebookAction action,Context context) {
+		if(isTokenValid()){
+			 Bundle params = new Bundle();
+			    params.putString("name", action.getName());
+			    params.putString("caption", action.getCaption());
+			    params.putString("description", action.getDescription());
+			    params.putString("link", "https://developers.facebook.com/android");
+			    params.putString("picture", action.getPicture());
+
+			    WebDialog feedDialog = (
+			        new WebDialog.FeedDialogBuilder(context,
+			            Session.getActiveSession(),
+			            params))
+			        .setOnCompleteListener(new OnCompleteListener() {
+
+			            @Override
+			            public void onComplete(Bundle values,
+			                FacebookException error) {
+			                if (error == null) {
+			                    // When the story is posted, echo the success
+			                    // and the post Id.
+			                    final String postId = values.getString("post_id");
+			                    if (postId != null) {
+//			                        Toast.makeText(getActivity(),
+//			                            "Posted story, id: "+postId,
+//			                            Toast.LENGTH_SHORT).show();
+			                    } else {
+			                        // User clicked the Cancel button
+//			                        Toast.makeText(getActivity().getApplicationContext(), 
+//			                            "Publish cancelled", 
+//			                            Toast.LENGTH_SHORT).show();
+			                    }
+			                } else if (error instanceof FacebookOperationCanceledException) {
+			                    // User clicked the "x" button
+//			                    Toast.makeText(getActivity().getApplicationContext(), 
+//			                        "Publish cancelled", 
+//			                        Toast.LENGTH_SHORT).show();
+			                } else {
+//			                    // Generic, ex: network error
+//			                    Toast.makeText(getActivity().getApplicationContext(), 
+//			                        "Error posting story", 
+//			                        Toast.LENGTH_SHORT).show();
+			                }
+			            }
+
+			        })
+			        .build();
+			    feedDialog.show();
+		}
+		
+	}
+
+
+	
 }

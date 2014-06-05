@@ -155,8 +155,8 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		_locationModel.setLatitude(location.getLatitude());
 		_locationModel.setLongitude(location.getLongitude());
 		
-		_locationModel.setLatitude(31.883608);
-		_locationModel.setLongitude(34.785845);
+		//_locationModel.setLatitude(31.883608);
+		//_locationModel.setLongitude(34.785845);
 		
 		_locationModel.setAddress(addressText);
 

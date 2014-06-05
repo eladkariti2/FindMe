@@ -55,7 +55,6 @@
             android:layout_weight="1"
             android:visibility="visible" >
 
-            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -139,5 +138,10 @@
             android:background="#ffffff"
             android:scaleType="centerCrop" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/temp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
 
 </RelativeLayout>

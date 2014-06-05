@@ -6,6 +6,7 @@ import java.util.zip.Inflater;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,9 +24,11 @@ import com.findmyplace.fragment.UserRoutsFragment;
 import com.findmyplace.model.APModel;
 import com.findmyplace.util.APConstant;
 import com.findmyplace.util.FacebookUtil;
+import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.OSUtil;
 import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
+import com.google.android.gms.maps.model.LatLng;
 
 public class UserLocationsAdapter extends BaseAdapter {
 
@@ -33,6 +36,7 @@ public class UserLocationsAdapter extends BaseAdapter {
 	Fragment _fragment;
 	List<APModel>  _data;
 	LayoutInflater _infalater ;
+
 
 	public UserLocationsAdapter (Context context,Fragment fragmnet,List<APModel> data){
 		_context = context;
@@ -70,8 +74,10 @@ public class UserLocationsAdapter extends BaseAdapter {
 		View deleteIconContainer = convertView.findViewById(R.id.delete_icon_container);
 		View sendMessageIconContainer = convertView.findViewById(R.id.share_icon_container);
 		View shareIconContainer = convertView.findViewById(R.id.send_icon_container);
-		ImageView locationImg = (ImageView)convertView.findViewById(R.id.image);
-
+		 ImageView locationImg = (ImageView)convertView.findViewById(R.id.image);
+		final ImageView locationImgTemp = (ImageView)convertView.findViewById(R.id.temp);
+		
+		
 		convertView.setTag(getItem(position));
 		deleteIconContainer.setTag(position);
 		sendMessageIconContainer.setTag(position);
@@ -88,10 +94,9 @@ public class UserLocationsAdapter extends BaseAdapter {
 			locationImg.setImageBitmap(OSUtil.getLocationPicture(_context, _data.get(position).getImage()));
 		}
 
-		sendMessageIconContainer.setOnClickListener(shareClickListenr);
-		sendMessageIconContainer.setOnClickListener(shareClickListenr);
 		shareIconContainer.setOnClickListener(shareClickListenr);
-
+		deleteIconContainer.setOnClickListener(deleteClickListenr);
+		
 		convertView.setTag(getItem(position));
 
 		return convertView;
@@ -140,9 +145,8 @@ public class UserLocationsAdapter extends BaseAdapter {
 		public void onClick(View v) {
 			int position  = (Integer)v.getTag();
 			APModel model = ((APModel)getItem(position));
-			
-			FacebookUtil.loginTofacebook(_context);
-			
+			String location ="" + model.getLatitude() + "," + model.getLongitude();
+			FacebookUtil.postLocation(_context,location,model.getLocationDescription(),model.getAddress());			
 		}
 	};
 }

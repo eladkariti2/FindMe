@@ -29,6 +29,7 @@
 
     <application
         android:allowBackup="true"
+        android:name="com.findmyplace.FindMyPlace"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:persistent="true"

@@ -1,9 +1,9 @@
 package com.findmyplace.util;
 
-import com.findmyplace.application.FindMyPlace;
-
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.findmyplace.FindMyPlace;
 
 
 

@@ -10,6 +10,11 @@ public class APConstant {
     public final static String ROUTE_LANGUAGE = "language";  
     public final static String ROUTE_REGION = "region"; 
     
+    
+    public final static String CENTER = "center"; 
+    public static final String ZOOM = "zoom";
+    public static final String MAP_SIZE = "size";
+    public static final String MAP_MARKER = "markers";    
     public final static String LOCATION_LANTITUDE = "locationLatitude";
     public final static String LOCATION_LONGITUDE = "locationLongitude";
     
@@ -21,4 +26,5 @@ public class APConstant {
 	public static final String FACEBOOK_ACCESS_TOKEN_KEY = "facebookAccessTokenKey";
 	public static final String FACEBOOK_ACCESS_EXPIRATION_KEY = "facebookAccessExpitationKey";
 	public static final String FACEBOOK_ID_KEY = "";
+	;
 }
