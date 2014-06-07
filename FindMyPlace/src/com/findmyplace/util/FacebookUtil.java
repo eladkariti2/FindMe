@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.findmyplace.R;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
@@ -112,9 +113,9 @@ public class FacebookUtil {
 		}
 	}
 	
-	public static void postLocation(Context context,String location,String description,String name) {
+	public static void postLocation(Context context,String location,String description,String name,String url) {
 		String imageURL = MapRouteUtil.getLocationStaticImageURL(location);
-		FacebookFeed feed = new FacebookFeed(name,description,"",imageURL,"");
+		FacebookFeed feed = new FacebookFeed(name,context.getString(R.string.fb_share_app_description),StringUtil.isEmpty(description) ? " "  :description,imageURL,url);
 		FacebookAction action = new FacebookAction(context, feed);
 		
 		if(isTokenValid()){
@@ -130,8 +131,8 @@ public class FacebookUtil {
 
 		Context context;
 		Session.StatusCallback callbackDelegate;
-		boolean hasPendingPublishPermissions = true;
-		boolean hasPendingReadPermissions = true;
+		boolean hasPendingPublishPermissions = false;
+		boolean hasPendingReadPermissions = false;
 		
 		public SessionStatusCallback(Context context,Session.StatusCallback callbackDelegate){
 			this.context = context;

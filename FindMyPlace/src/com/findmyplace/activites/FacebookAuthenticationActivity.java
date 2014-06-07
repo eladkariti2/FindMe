@@ -75,8 +75,8 @@ public class FacebookAuthenticationActivity extends Activity {
 		private  class SessionStatusCallback implements Session.StatusCallback {
 
 			
-			boolean hasPendingPublishPermissions = true;
-			boolean hasPendingReadPermissions = true;
+			boolean hasPendingPublishPermissions = false;//it's false because  the app don't need more permission if we need to ask for more permission change it's to true.
+			boolean hasPendingReadPermissions = false;
 		
 			
 			@Override

@@ -37,8 +37,14 @@
     <string name="location_item_added_location_unsuccess">ארעה שגיאה, אנה נסה שנית"</string>
     
     
+     <string name="fb_share_app_description">האפליקציה שתחזיר אותך לכל מקום שסימנת ...</string>
+    
+    
      <string name="share_location_message">"היי אני משתמש באפליקציית FindMe \n אני נמצא ב "</string>
      <string name="find_me_scheme">"http://findmyplace://navigate?location="</string>
 
+     <string name="debug_mail_address">eladkariti@gmail.com</string>
+    
+     <string name="google_play_link">https://play.google.com/store/apps/details?id=com.arohi.freewifiinternetar</string>
   	<string name="app_id">"743843289000888"</string>
 </resources>

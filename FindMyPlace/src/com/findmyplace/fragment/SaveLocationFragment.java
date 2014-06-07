@@ -35,6 +35,7 @@ import com.findmyplace.util.APConstant;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.MapUtil;
 import com.findmyplace.util.OSUtil;
+import com.findmyplace.util.StorageUtil;
 import com.findmyplace.util.database.DataBaseUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -125,15 +126,13 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		});
 	}
 
-	protected void getRoute(LatLng destenation, LatLng position) {
-
-		List<RMDirection> directions =	MapRouteUtil.getRoute(getActivity(), position, destenation);
-		MapUtil.drawGDirection(directions.get(0), _map);
-	}
-
 	@Override
 	public void updateLocation(Location location) {
 		Log.d("SaveLocationFragment", "Location - latitude: " + location.getLatitude() +", longitude: " + location.getLongitude());
+		
+
+		getActivity().findViewById(R.id.progrees_bar).setVisibility(View.GONE);
+		getActivity().findViewById(R.id.save_location_container).setVisibility(View.VISIBLE);
 		
 		String addressText = MapUtil.getAddrres(getActivity(),location.getLatitude(),location.getLongitude() );
 		
@@ -148,10 +147,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 		_map.moveCamera(center);
 		_map.animateCamera(zoom);
 
-		getActivity().findViewById(R.id.progrees_bar).setVisibility(View.GONE);
-		getActivity().findViewById(R.id.save_location_container).setVisibility(View.VISIBLE);
-
-		
+	
 		_locationModel.setLatitude(location.getLatitude());
 		_locationModel.setLongitude(location.getLongitude());
 		
@@ -230,7 +226,7 @@ public class SaveLocationFragment extends Fragment implements LocationListenerI{
 			String path = "" + now.toMillis(false);
 			
 			Bitmap imageBitmap = (Bitmap) extras.get("data");
-			if (OSUtil.saveLocationPicture(getActivity(), path,imageBitmap)){
+			if (StorageUtil.saveLocationPicture(getActivity(), path,imageBitmap)){
 				_locationModel.setImage(path);
 			}
 

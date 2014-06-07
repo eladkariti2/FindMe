@@ -129,43 +129,44 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 
 	@Override
 	public void updateLocation(Location location) {
-		if(firsLocation){
-			firsLocation = !firsLocation;
-
-			initilizeMap();
-			setupMap(location);		
-			setupStoryPoint();
-
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					final CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
-					getActivity().runOnUiThread(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							map.moveCamera(zoom);
-							map.setMyLocationEnabled(true);
-							displayZoom = true;
-						}
-					});
-
+		if(isAdded()){
+			if(firsLocation){
+				firsLocation = !firsLocation;
+	
+				initilizeMap();
+				setupMap(location);		
+				setupStoryPoint();
+	
+				Timer timer = new Timer();
+				timer.schedule(new TimerTask() {
+	
+					@Override
+					public void run() {
+						final CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+						getActivity().runOnUiThread(new Runnable() {
+	
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								map.moveCamera(zoom);
+								map.setMyLocationEnabled(true);
+								displayZoom = true;
+							}
+						});
+	
+					}
+				}, 2000);
+	
+			}else{
+				if(displayZoom){
+					LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
+					CameraUpdate center= CameraUpdateFactory.newLatLng(position);			
+					map.moveCamera(center);
+					displayZoom = false;
 				}
-			}, 2000);
-
-		}else{
-			if(displayZoom){
-				LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
-				CameraUpdate center= CameraUpdateFactory.newLatLng(position);			
-				map.moveCamera(center);
-				displayZoom = false;
+				//map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
 			}
-			//map.addMarker(MapUtil.getMarker(new LatLng(location.getLatitude(),location.getLongitude())));
 		}
-
 	}
 
 	private void setupStoryPoint() {
@@ -263,16 +264,18 @@ public class RouteFragment extends Fragment implements LocationListenerI{
 	 * function to load map. If map is not created it will create it for you
 	 * */
 	private void initilizeMap() {
-		if (map == null) {
-			SupportMapFragment fragment = (SupportMapFragment) (getActivity().getSupportFragmentManager().findFragmentById(R.id.main_content));
-			map = fragment.getMap();
-			// check if map is created successfully or not
+		if(isAdded()){
 			if (map == null) {
-				Toast.makeText(getActivity(),
-						getActivity().getString(R.string.map_error), Toast.LENGTH_SHORT)
-						.show();
-			}else{
-				map.setInfoWindowAdapter(new TitleLocationInfoAdapter(getActivity()));
+				SupportMapFragment fragment = (SupportMapFragment) (getActivity().getSupportFragmentManager().findFragmentById(R.id.main_content));
+				map = fragment.getMap();
+				// check if map is created successfully or not
+				if (map == null) {
+					Toast.makeText(getActivity(),
+							getActivity().getString(R.string.map_error), Toast.LENGTH_SHORT)
+							.show();
+				}else{
+					map.setInfoWindowAdapter(new TitleLocationInfoAdapter(getActivity()));
+				}
 			}
 		}
 	}

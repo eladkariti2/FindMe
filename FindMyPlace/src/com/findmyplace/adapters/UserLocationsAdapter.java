@@ -26,6 +26,7 @@ import com.findmyplace.util.APConstant;
 import com.findmyplace.util.FacebookUtil;
 import com.findmyplace.util.MapRouteUtil;
 import com.findmyplace.util.OSUtil;
+import com.findmyplace.util.StorageUtil;
 import com.findmyplace.util.StringUtil;
 import com.findmyplace.util.database.DataBaseUtil;
 import com.google.android.gms.maps.model.LatLng;
@@ -89,8 +90,8 @@ public class UserLocationsAdapter extends BaseAdapter {
 		descriptionTextView.setText(description);
 
 		String imaString = _data.get(position).getImage();
-		if(!StringUtil.isEmpty(imaString) && OSUtil.hasExternalStoragePrivateFile(_context, imaString)){
-			locationImg.setImageBitmap(OSUtil.getLocationPicture(_context, _data.get(position).getImage()));
+		if(!StringUtil.isEmpty(imaString) && StorageUtil.hasExternalStoragePrivateFile(_context, imaString)){
+			locationImg.setImageBitmap(StorageUtil.getLocationPicture(_context, _data.get(position).getImage()));
 		}
 
 		shareIconContainer.setOnClickListener(shareClickListenr);
@@ -145,7 +146,7 @@ public class UserLocationsAdapter extends BaseAdapter {
 			int position  = (Integer)v.getTag();
 			APModel model = ((APModel)getItem(position));
 			String location ="" + model.getLatitude() + "," + model.getLongitude();
-			FacebookUtil.postLocation(_context,location,model.getLocationDescription(),model.getAddress());			
+			FacebookUtil.postLocation(_context,location,model.getLocationDescription(),model.getAddress(),_context.getResources().getString(R.string.google_play_link));			
 		}
 	};
 }
