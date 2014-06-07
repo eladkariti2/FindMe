@@ -55,6 +55,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		Log.d(Tag,"oncreate");
 
+		Session session = Session.getActiveSession();
 		facebookSessionLifeCycleHelper = new UiLifecycleHelper(this, new FacebookUtil.SessionStatusCallback(this,  initFacebookSessionCallback()));
 		
 		if(!UrlSchemeUtil.parseData(getIntent().getData())){
@@ -182,7 +183,6 @@ public class MainActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onStart();
 		Log.d(Tag,"onStart");
-
 	}
 
 	@Override

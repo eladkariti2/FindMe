@@ -72,10 +72,9 @@ public class UserLocationsAdapter extends BaseAdapter {
 		TextView addressTextView = (TextView)convertView.findViewById(R.id.address);
 		TextView descriptionTextView = (TextView)convertView.findViewById(R.id.decription);
 		View deleteIconContainer = convertView.findViewById(R.id.delete_icon_container);
-		View sendMessageIconContainer = convertView.findViewById(R.id.share_icon_container);
-		View shareIconContainer = convertView.findViewById(R.id.send_icon_container);
+		View shareIconContainer = convertView.findViewById(R.id.share_icon_container);
+		View sendMessageIconContainer = convertView.findViewById(R.id.send_icon_container);
 		 ImageView locationImg = (ImageView)convertView.findViewById(R.id.image);
-		final ImageView locationImgTemp = (ImageView)convertView.findViewById(R.id.temp);
 		
 		
 		convertView.setTag(getItem(position));
