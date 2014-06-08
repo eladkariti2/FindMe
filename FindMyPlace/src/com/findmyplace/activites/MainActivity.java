@@ -1,18 +1,11 @@
 package com.findmyplace.activites;
 
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,14 +13,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.findmyplace.R;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.UiLifecycleHelper;
+import com.findmyplace.ads.BannerController;
 import com.findmyplace.fragment.HomeFragment;
 import com.findmyplace.fragment.RouteFragment;
 import com.findmyplace.interfaces.LocationListenerI;
@@ -43,10 +37,12 @@ public class MainActivity extends FragmentActivity {
 	protected  UiLifecycleHelper facebookSessionLifeCycleHelper;
 	protected Session.StatusCallback facebookSessionCallback;
 	
-	LatLng _currentPosition ;
-	LocationManager _locationManager;
-	Fragment _currentFrgment;
-	TextView _title;
+	protected BannerController bannerController;
+	
+	protected LatLng _currentPosition ;
+	protected LocationManager _locationManager;
+	protected Fragment _currentFrgment;
+	protected TextView _title;
 
 	APLocationListenr _locationListener = new APLocationListenr(this);
 
@@ -76,6 +72,11 @@ public class MainActivity extends FragmentActivity {
 		_currentFrgment = new HomeFragment();
 		addFragment(_currentFrgment,false,"");
 		facebookSessionLifeCycleHelper.onCreate(savedInstanceState);
+		
+		ViewGroup bannerConteiner = (ViewGroup) findViewById(R.id.banner);
+		
+		bannerController = new BannerController(this, bannerConteiner, "/6253334/dfp_example_ad");
+		bannerController.displayBanner();
 	}
 
 	public StatusCallback initFacebookSessionCallback() {
