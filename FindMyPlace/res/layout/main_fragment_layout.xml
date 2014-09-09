@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <fragment
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        class="com.google.android.gms.maps.SupportMapFragment" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/main_content"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        android:padding="1dp" >
+
+
+        <Button
+            android:id="@+id/map_normal_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="Normal" />
+
+        <Button
+            android:id="@+id/map_hybrid_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="Hybrid" />
+
+    </LinearLayout>
+
+</RelativeLayout>

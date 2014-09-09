@@ -23,6 +23,7 @@ import com.facebook.Session.StatusCallback;
 import com.facebook.UiLifecycleHelper;
 import com.findmyplace.ads.BannerController;
 import com.findmyplace.fragment.HomeFragment;
+import com.findmyplace.fragment.MainFragment;
 import com.findmyplace.fragment.RouteFragment;
 import com.findmyplace.interfaces.LocationListenerI;
 import com.findmyplace.listenr.APLocationListenr;
@@ -70,6 +71,7 @@ public class MainActivity extends FragmentActivity {
 		initView();
 
 		_currentFrgment = new HomeFragment();
+		//_currentFrgment = new MainFragment();
 		addFragment(_currentFrgment,false,"");
 		facebookSessionLifeCycleHelper.onCreate(savedInstanceState);
 		
